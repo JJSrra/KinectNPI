@@ -14,6 +14,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
     using Microsoft.Kinect;
 
 
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -421,6 +422,27 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             {
                 isBackGestureActive = false;
             }
+
+
+            GetCursorPoint();
+        }
+
+        //CURSOR DE SELECCIÓN
+
+        public class CursorPoint
+        {
+            public double X { get; set; }
+            public double Y { get; set; }
+
+
+        }
+
+        public CursorPoint GetCursorPoint()
+        {
+            Point elementTopLeft = this.PointToScreen(new Point());
+            double centerX = elementTopLeft.X + (this.ActualWidth / 2);
+            double centerY = elementTopLeft.Y + (this.ActualHeight / 2);
+            return new CursorPoint { X = centerX, Y = centerY };
         }
     }
 }
