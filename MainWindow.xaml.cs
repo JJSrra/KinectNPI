@@ -84,8 +84,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         private DrawingImage imageSource;
 
-        private Skeleton[] skeletons;
-        private Skeleton skeleton;
+ 
         private Joint head, rightHand, leftHand;
         bool isForwardGestureActive = false;
         bool isBackGestureActive = false;
@@ -234,6 +233,20 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                     {
                         RenderClippedEdges(skel, dc);
 
+                        head = skel.Joints[JointType.Head];
+                        rightHand = skel.Joints[JointType.HandRight];
+                        leftHand = skel.Joints[JointType.HandLeft];
+
+                        if (head.TrackingState == JointTrackingState.NotTracked ||
+                            rightHand.TrackingState == JointTrackingState.NotTracked ||
+                            leftHand.TrackingState == JointTrackingState.NotTracked)
+                        {
+                            //Don't have a good read on the joints so we cannot process gestures
+                            return;
+                        }
+
+                        ProcessForwardBackGesture(head, rightHand, leftHand);
+
                         if (skel.TrackingState == SkeletonTrackingState.Tracked)
                         {
                             this.DrawBonesAndJoints(skel, dc);
@@ -252,20 +265,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 // prevent drawing outside of our render area
                 this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-
-                head = skeleton.Joints[JointType.Head];
-                rightHand = skeleton.Joints[JointType.HandRight];
-                leftHand = skeleton.Joints[JointType.HandLeft];
-
-                if (head.TrackingState == JointTrackingState.NotTracked ||
-                    rightHand.TrackingState == JointTrackingState.NotTracked ||
-                    leftHand.TrackingState == JointTrackingState.NotTracked)
-                {
-                    //Don't have a good read on the joints so we cannot process gestures
-                    return;
-                }
-
-                ProcessForwardBackGesture(head, rightHand, leftHand);
             }
         }
 
