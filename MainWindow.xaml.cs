@@ -12,7 +12,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
     using System.Windows.Controls;
     using System.Windows.Media;
     using Microsoft.Kinect;
-
+    using Microsoft.Kinect.Toolkit;
+    using Microsoft.Office.Interop.PowerPoint;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -88,6 +89,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         private Joint head, rightHand, leftHand;
         bool isForwardGestureActive = false;
         bool isBackGestureActive = false;
+        private KinectSensorChooser sensorChooser;
+
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -95,6 +98,64 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            this.sensorChooser = new KinectSensorChooser();
+            this.sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
+            this.sensorChooserUi.KinectSensorChooser = this.sensorChooser;
+            this.sensorChooser.Start();
+        }
+
+        private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs args)
+        {
+            bool error = false;
+            if (args.OldSensor != null)
+            {
+                try
+                {
+                    args.OldSensor.DepthStream.Range = DepthRange.Default;
+                    args.OldSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                    args.OldSensor.DepthStream.Disable();
+                    args.OldSensor.SkeletonStream.Disable();
+                }
+                catch (InvalidOperationException)
+                {
+                    error = true;
+                }
+            }
+
+            if (args.NewSensor != null)
+            {
+                try
+                {
+                    args.NewSensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+                    args.NewSensor.SkeletonStream.Enable();
+
+                    try
+                    {
+                        args.NewSensor.DepthStream.Range = DepthRange.Near;
+                        args.NewSensor.SkeletonStream.EnableTrackingInNearRange = true;
+                        args.NewSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        args.NewSensor.DepthStream.Range = DepthRange.Default;
+                        args.NewSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                        error = true;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    error = true;
+                }
+            }
+
+            if (!error)
+                kinectRegion.KinectSensor = args.NewSensor;
+
         }
 
         /// <summary>
@@ -151,8 +212,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.imageSource = new DrawingImage(this.drawingGroup);
 
             // Display the drawing using our image control
-            Image.Source = this.imageSource;
-
             // Look through all sensors and start the first connected one.
             // This requires that a Kinect is connected at the time of app startup.
             // To make your app robust against plug/unplug, 
@@ -187,7 +246,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
             if (null == this.sensor)
             {
-                this.statusBarText.Text = Properties.Resources.NoKinectReady;
             }
         }
 
@@ -253,12 +311,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                         }
                         else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
                         {
-                            dc.DrawEllipse(
-                            this.centerPointBrush,
-                            null,
-                            this.SkeletonPointToScreen(skel.Position),
-                            BodyCenterThickness,
-                            BodyCenterThickness);
+                           
                         }
                     }
                 }
@@ -320,7 +373,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 if (drawBrush != null)
                 {
-                    drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
                 }
             }
         }
@@ -330,13 +382,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         /// <param name="skelpoint">point to map</param>
         /// <returns>mapped point</returns>
-        private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
-        {
-            // Convert point to depth space.  
-            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
-            DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
-            return new Point(depthPoint.X, depthPoint.Y);
-        }
+  
 
         /// <summary>
         /// Draws a bone line between two joints
@@ -371,7 +417,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 drawPen = this.trackedBonePen;
             }
 
-            drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
         }
 
         /// <summary>
@@ -383,14 +428,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         {
             if (null != this.sensor)
             {
-                if (this.checkBoxSeatedMode.IsChecked.GetValueOrDefault())
-                {
-                    this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
-                }
-                else
-                {
-                    this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
-                }
+               
             }
         }
 

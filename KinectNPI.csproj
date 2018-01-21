@@ -42,6 +42,9 @@
     <Reference Include="Microsoft.Kinect">
       <HintPath>$(KINECTSDK10_DIR)\Assemblies\Microsoft.Kinect.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.PowerPoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
