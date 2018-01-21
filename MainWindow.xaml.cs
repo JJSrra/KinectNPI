@@ -173,9 +173,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 this.sensor.SkeletonStream.Enable();
 
                 // Add an event handler to be called whenever there is new color frame data
-                //this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
-                sensor.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(sensor_SkeletonFrameReady);
-
+                this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
+                
                 // Start the sensor!
                 try
                 {
@@ -253,6 +252,20 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 // prevent drawing outside of our render area
                 this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
+
+                head = skeleton.Joints[JointType.Head];
+                rightHand = skeleton.Joints[JointType.HandRight];
+                leftHand = skeleton.Joints[JointType.HandLeft];
+
+                if (head.TrackingState == JointTrackingState.NotTracked ||
+                    rightHand.TrackingState == JointTrackingState.NotTracked ||
+                    leftHand.TrackingState == JointTrackingState.NotTracked)
+                {
+                    //Don't have a good read on the joints so we cannot process gestures
+                    return;
+                }
+
+                ProcessForwardBackGesture(head, rightHand, leftHand);
             }
         }
 
@@ -380,27 +393,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                     this.sensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
                 }
             }
-        }
-
-        void sensor_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-        {
-            var skeletonFrame = e.OpenSkeletonFrame();
-            skeletonFrame.CopySkeletonDataTo(skeletons);
-            skeleton = skeletons[0];
-
-            head = skeleton.Joints[JointType.Head];
-            rightHand = skeleton.Joints[JointType.HandRight];
-            leftHand = skeleton.Joints[JointType.HandLeft];
-
-            if (head.TrackingState == JointTrackingState.NotTracked ||
-                rightHand.TrackingState == JointTrackingState.NotTracked ||
-                leftHand.TrackingState == JointTrackingState.NotTracked)
-            {
-                //Don't have a good read on the joints so we cannot process gestures
-                return;
-            }
-
-            ProcessForwardBackGesture(head, rightHand, leftHand);
         }
 
         private void ProcessForwardBackGesture(Joint head, Joint rightHand, Joint leftHand)
