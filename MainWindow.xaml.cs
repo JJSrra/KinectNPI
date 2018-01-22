@@ -7,14 +7,15 @@
 namespace Microsoft.Samples.Kinect.SkeletonBasics
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
+    using System.Windows.Media.Imaging;
     using Microsoft.Kinect;
     using Microsoft.Kinect.Toolkit;
-    using Microsoft.Office.Interop.PowerPoint;
-
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -86,12 +87,19 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         private DrawingImage imageSource;
 
- 
+        private WriteableBitmap _ColorImageBitmap;
+        private Int32Rect _ColorImageBitmapRect;
+        private int _ColorImageStride;
+        private Skeleton[] FrameSkeletons;
+
         private Joint head, rightHand, leftHand;
         bool isForwardGestureActive = false;
         bool isBackGestureActive = false;
-        private KinectSensorChooser sensorChooser;
 
+        List<Button> buttons;
+        static Button selected;
+        float handX;
+        float handY;
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
@@ -99,64 +107,272 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += OnLoaded;
+
+            InitializeButtons();
+            kinectButton.Click += new RoutedEventHandler(kinectButton_Click);
+
+            Loaded += (s, e) => { DiscoverKinectSensor(); };
+            Unloaded += (s, e) => { this.Kinect = null; };
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        private void InitializeButtons()
         {
-            this.sensorChooser = new KinectSensorChooser();
-            this.sensorChooser.KinectChanged += SensorChooserOnKinectChanged;
-            this.sensorChooserUi.KinectSensorChooser = this.sensorChooser;
-            this.sensorChooser.Start();
+            buttons = new List<Button> {button1, button2, quitButton};
         }
 
-        private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs args)
+        private void DiscoverKinectSensor()
         {
-            bool error = false;
-            if (args.OldSensor != null)
+            KinectSensor.KinectSensors.StatusChanged += KinectSensors_StatusChanged;
+            this.Kinect = KinectSensor.KinectSensors.FirstOrDefault(x => x.Status == KinectStatus.Connected);
+        }
+
+        private void KinectSensors_StatusChanged(object sender, StatusChangedEventArgs e)
+        {
+            switch (e.Status)
             {
-                try
+                case KinectStatus.Connected:
+                    if (this.Kinect == null)
+                    {
+                        this.Kinect = e.Sensor;
+                    }
+                    break;
+                case KinectStatus.Disconnected:
+                    if (this.Kinect == e.Sensor)
+                    {
+                        this.Kinect = null;
+                        this.Kinect = KinectSensor.KinectSensors.FirstOrDefault(x => x.Status == KinectStatus.Connected);
+                        if (this.Kinect == null)
+                        {
+                            MessageBox.Show("Sensor Disconnected. Please reconnect to continue.");
+                        }
+                    }
+                    break;
+            }
+        }
+
+        public KinectSensor Kinect
+        {
+            get { return this.sensor; }
+            set
+            {
+                if (this.sensor != value)
                 {
-                    args.OldSensor.DepthStream.Range = DepthRange.Default;
-                    args.OldSensor.SkeletonStream.EnableTrackingInNearRange = false;
-                    args.OldSensor.DepthStream.Disable();
-                    args.OldSensor.SkeletonStream.Disable();
-                }
-                catch (InvalidOperationException)
-                {
-                    error = true;
+                    if (this.sensor != null)
+                    {
+                        UninitializeKinectSensor(this.sensor);
+                        this.sensor = null;
+                    }
+                    if (value != null && value.Status == KinectStatus.Connected)
+                    {
+                        this.sensor = value;
+                        InitializeKinectSensor(this.sensor);
+                    }
                 }
             }
+        }
 
-            if (args.NewSensor != null)
+        private void UninitializeKinectSensor(KinectSensor kinectSensor)
+        {
+            if (kinectSensor != null)
             {
-                try
-                {
-                    args.NewSensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
-                    args.NewSensor.SkeletonStream.Enable();
+                kinectSensor.Stop();
+                kinectSensor.ColorFrameReady -= Kinect_ColorFrameReady;
+                kinectSensor.SkeletonFrameReady -= Kinect_SkeletonFrameReady;
+            }
+        }
 
-                    try
-                    {
-                        args.NewSensor.DepthStream.Range = DepthRange.Near;
-                        args.NewSensor.SkeletonStream.EnableTrackingInNearRange = true;
-                        args.NewSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        args.NewSensor.DepthStream.Range = DepthRange.Default;
-                        args.NewSensor.SkeletonStream.EnableTrackingInNearRange = false;
-                        error = true;
-                    }
-                }
-                catch (InvalidOperationException)
+        private void InitializeKinectSensor(KinectSensor kinectSensor)
+        {
+            if (kinectSensor != null)
+            {
+                ColorImageStream colorStream = kinectSensor.ColorStream;
+                colorStream.Enable();
+                this._ColorImageBitmap = new WriteableBitmap(colorStream.FrameWidth, colorStream.FrameHeight,
+                    96, 96, PixelFormats.Bgr32, null);
+                this._ColorImageBitmapRect = new Int32Rect(0, 0, colorStream.FrameWidth, colorStream.FrameHeight);
+                this._ColorImageStride = colorStream.FrameWidth * colorStream.FrameBytesPerPixel;
+                videoStream.Source = this._ColorImageBitmap;
+
+                kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters()
                 {
-                    error = true;
+                    Correction = 0.5f,
+                    JitterRadius = 0.05f,
+                    MaxDeviationRadius = 0.04f,
+                    Smoothing = 0.5f
+                });
+
+                kinectSensor.SkeletonFrameReady += Kinect_SkeletonFrameReady;
+                kinectSensor.ColorFrameReady += Kinect_ColorFrameReady;
+                kinectSensor.Start();
+                this.FrameSkeletons = new Skeleton[this.Kinect.SkeletonStream.FrameSkeletonArrayLength];
+
+            }
+        }
+
+        private void Kinect_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
+        {
+            using (ColorImageFrame frame = e.OpenColorImageFrame())
+            {
+                if (frame != null)
+                {
+                    byte[] pixelData = new byte[frame.PixelDataLength];
+                    frame.CopyPixelDataTo(pixelData);
+                    this._ColorImageBitmap.WritePixels(this._ColorImageBitmapRect, pixelData,
+                        this._ColorImageStride, 0);
                 }
             }
+        }
 
-            if (!error)
-                kinectRegion.KinectSensor = args.NewSensor;
+        private void Kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            using (SkeletonFrame frame = e.OpenSkeletonFrame())
+            {
+                if (frame != null)
+                {
+                    frame.CopySkeletonDataTo(this.FrameSkeletons);
+                    Skeleton skeleton = GetPrimarySkeleton(this.FrameSkeletons);
 
+                    if (skeleton == null)
+                    {
+                        kinectButton.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        Joint primaryHand = GetPrimaryHand(skeleton);
+                        TrackHand(primaryHand);
+
+                    }
+                }
+            }
+        }
+
+        //get the hand closest to the Kinect sensor
+        private static Joint GetPrimaryHand(Skeleton skeleton)
+        {
+            Joint primaryHand = new Joint();
+            if (skeleton != null)
+            {
+                primaryHand = skeleton.Joints[JointType.HandLeft];
+                Joint rightHand = skeleton.Joints[JointType.HandRight];
+                if (rightHand.TrackingState != JointTrackingState.NotTracked)
+                {
+                    if (primaryHand.TrackingState == JointTrackingState.NotTracked)
+                    {
+                        primaryHand = rightHand;
+                    }
+                    else
+                    {
+                        if (primaryHand.Position.Z > rightHand.Position.Z)
+                        {
+                            primaryHand = rightHand;
+                        }
+                    }
+                }
+            }
+            return primaryHand;
+        }
+
+        //get the skeleton closest to the Kinect sensor
+        private static Skeleton GetPrimarySkeleton(Skeleton[] skeletons)
+        {
+            Skeleton skeleton = null;
+            if (skeletons != null)
+            {
+                for (int i = 0; i < skeletons.Length; i++)
+                {
+                    if (skeletons[i].TrackingState == SkeletonTrackingState.Tracked)
+                    {
+                        if (skeleton == null)
+                        {
+                            skeleton = skeletons[i];
+                        }
+                        else
+                        {
+                            if (skeleton.Position.Z > skeletons[i].Position.Z)
+                            {
+                                skeleton = skeletons[i];
+                            }
+                        }
+                    }
+                }
+            }
+            return skeleton;
+        }
+
+        //track and display hand
+        private void TrackHand(Joint hand)
+        {
+            if (hand.TrackingState == JointTrackingState.NotTracked)
+            {
+                kinectButton.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            else
+            {
+                kinectButton.Visibility = System.Windows.Visibility.Visible;
+
+                DepthImagePoint point = Kinect.CoordinateMapper.MapSkeletonPointToDepthPoint(hand.Position, DepthImageFormat.Resolution640x480Fps30);
+                handX = (int)((point.X * LayoutRoot.ActualWidth / this.Kinect.DepthStream.FrameWidth) -
+                    (kinectButton.ActualWidth / 2.0));
+                handY = (int)((point.Y * LayoutRoot.ActualHeight / this.Kinect.DepthStream.FrameHeight) -
+                    (kinectButton.ActualHeight / 2.0));
+                Canvas.SetLeft(kinectButton, handX);
+                Canvas.SetTop(kinectButton, handY);
+
+                if (isHandOver(kinectButton, buttons)) kinectButton.Hovering();
+                else kinectButton.Release();
+                if (hand.JointType == JointType.HandRight)
+                {
+                    kinectButton.ImageSource = "/Images/RightHand.png";
+                    kinectButton.ActiveImageSource = "/Images/RightHand.png";
+                }
+                else
+                {
+                    kinectButton.ImageSource = "/Images/LeftHand.png";
+                    kinectButton.ActiveImageSource = "/Images/LeftHand.png";
+                }
+            }
+        }
+
+        //detect if hand is overlapping over any button
+        private bool isHandOver(FrameworkElement hand, List<Button> buttonslist)
+        {
+            var handTopLeft = new Point(Canvas.GetLeft(hand), Canvas.GetTop(hand));
+            var handX = handTopLeft.X + hand.ActualWidth / 2;
+            var handY = handTopLeft.Y + hand.ActualHeight / 2;
+
+            foreach (Button target in buttonslist)
+            {
+                Point targetTopLeft = new Point(Canvas.GetLeft(target), Canvas.GetTop(target));
+                if (handX > targetTopLeft.X &&
+                    handX < targetTopLeft.X + target.Width &&
+                    handY > targetTopLeft.Y &&
+                    handY < targetTopLeft.Y + target.Height)
+                {
+                    selected = target;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        void kinectButton_Click(object sender, RoutedEventArgs e)
+        {
+            selected.RaiseEvent(new RoutedEventArgs(Button.ClickEvent, selected));
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            message.Content = "Button 1 clicked!";
+        }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            message.Content = "Button 2 clicked!";
+        }
+
+        private void quitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
 
         /// <summary>
@@ -213,6 +429,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.imageSource = new DrawingImage(this.drawingGroup);
 
             // Display the drawing using our image control
+            Image.Source = this.imageSource;
+
             // Look through all sensors and start the first connected one.
             // This requires that a Kinect is connected at the time of app startup.
             // To make your app robust against plug/unplug, 
@@ -233,7 +451,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 // Add an event handler to be called whenever there is new color frame data
                 this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
-                
+
                 // Start the sensor!
                 try
                 {
@@ -312,7 +530,12 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                         }
                         else if (skel.TrackingState == SkeletonTrackingState.PositionOnly)
                         {
-                           
+                            dc.DrawEllipse(
+                            this.centerPointBrush,
+                            null,
+                            this.SkeletonPointToScreen(skel.Position),
+                            BodyCenterThickness,
+                            BodyCenterThickness);
                         }
                     }
                 }
@@ -357,7 +580,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
             this.DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
             this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
- 
+
             // Render Joints
             foreach (Joint joint in skeleton.Joints)
             {
@@ -365,15 +588,16 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 if (joint.TrackingState == JointTrackingState.Tracked)
                 {
-                    drawBrush = this.trackedJointBrush;                    
+                    drawBrush = this.trackedJointBrush;
                 }
                 else if (joint.TrackingState == JointTrackingState.Inferred)
                 {
-                    drawBrush = this.inferredJointBrush;                    
+                    drawBrush = this.inferredJointBrush;
                 }
 
                 if (drawBrush != null)
                 {
+                    drawingContext.DrawEllipse(drawBrush, null, this.SkeletonPointToScreen(joint.Position), JointThickness, JointThickness);
                 }
             }
         }
@@ -383,7 +607,13 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         /// <param name="skelpoint">point to map</param>
         /// <returns>mapped point</returns>
-  
+        private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
+        {
+            // Convert point to depth space.  
+            // We are not using depth directly, but we do want the points in our 640x480 output resolution.
+            DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
+            return new Point(depthPoint.X, depthPoint.Y);
+        }
 
         /// <summary>
         /// Draws a bone line between two joints
@@ -418,6 +648,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 drawPen = this.trackedBonePen;
             }
 
+            drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));
         }
 
         /// <summary>
@@ -429,7 +660,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         {
             if (null != this.sensor)
             {
-               
+                
             }
         }
 
@@ -460,27 +691,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             {
                 isBackGestureActive = false;
             }
-
-
-            GetCursorPoint();
-        }
-
-        //CURSOR DE SELECCIÓN
-
-        public class CursorPoint
-        {
-            public double X { get; set; }
-            public double Y { get; set; }
-
-
-        }
-
-        public CursorPoint GetCursorPoint()
-        {
-            Point elementTopLeft = this.PointToScreen(new Point());
-            double centerX = elementTopLeft.X + (this.ActualWidth / 2);
-            double centerY = elementTopLeft.Y + (this.ActualHeight / 2);
-            return new CursorPoint { X = centerX, Y = centerY };
         }
     }
 }
