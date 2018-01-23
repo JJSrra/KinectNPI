@@ -1,0 +1,70 @@
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\bin\Debug\KinectButton.exe
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\bin\Debug\KinectButton.pdb
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\MainWindow.baml
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\MainWindow.g.cs
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\App.g.cs
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\KinectButton_MarkupCompile.cache
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\KinectButton.g.resources
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\KinectButton.Properties.Resources.resources
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\KinectButton.exe
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\obj\x86\Debug\KinectButton.pdb
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\bin\Debug\Coding4Fun.Kinect.Wpf.dll
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\bin\Debug\Microsoft.Expression.Drawing.dll
+C:\Users\SANDEEP\Documents\Visual Studio 2010\Projects\Kinect\KinectButton\KinectButton\bin\Debug\KinectButton.exe.config
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\bin\Debug\KinectButton.exe.config
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\bin\Debug\KinectButton.exe
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\bin\Debug\KinectButton.pdb
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\bin\Debug\Coding4Fun.Kinect.Wpf.dll
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\bin\Debug\Microsoft.Expression.Drawing.dll
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\bin\Debug\Microsoft.Kinect.dll
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\bin\Debug\Microsoft.Kinect.xml
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csprojResolveAssemblyReference.cache
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\MainWindow.baml
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\MainWindow.g.cs
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\App.g.cs
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton_MarkupCompile.cache
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.g.resources
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.Properties.Resources.resources
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csproj.GenerateResource.Cache
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csproj.CoreCompileInputs.cache
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.exe
+C:\Users\jjsie\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.pdb
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\bin\Debug\KinectButton.exe.config
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\bin\Debug\KinectButton.exe
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\bin\Debug\KinectButton.pdb
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\bin\Debug\Coding4Fun.Kinect.Wpf.dll
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\bin\Debug\Microsoft.Expression.Drawing.dll
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\bin\Debug\Microsoft.Kinect.dll
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\bin\Debug\Microsoft.Kinect.xml
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csprojResolveAssemblyReference.cache
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\MainWindow.baml
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\App.g.cs
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton_MarkupCompile.cache
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.g.resources
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.Properties.Resources.resources
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csproj.GenerateResource.Cache
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csproj.CoreCompileInputs.cache
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.exe
+C:\Users\Alberto\Desktop\KinectButton\KinectButton\obj\x86\Debug\KinectButton.pdb
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\bin\Debug\KinectButton.exe.config
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\bin\Debug\KinectButton.exe
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\bin\Debug\KinectButton.pdb
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\bin\Debug\Coding4Fun.Kinect.Wpf.dll
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\bin\Debug\Microsoft.Expression.Drawing.dll
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\bin\Debug\Microsoft.Kinect.dll
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\bin\Debug\Microsoft.Kinect.xml
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csprojResolveAssemblyReference.cache
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\MainWindow.baml
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\App.g.cs
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\KinectButton_MarkupCompile.cache
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\KinectButton.g.resources
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\KinectButton.Properties.Resources.resources
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csproj.GenerateResource.Cache
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\KinectButton.csproj.CoreCompileInputs.cache
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\KinectButton.exe
+C:\Users\Alberto\Documents\GitHub\KinectNPI\KinectButton\KinectButton\obj\x86\Debug\KinectButton.pdb
