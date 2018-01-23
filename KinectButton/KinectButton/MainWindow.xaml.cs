@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Office.Interop.PowerPoint;
+using System.IO;
 
 using Microsoft.Kinect;
 using Coding4Fun.Kinect.Wpf;
@@ -29,6 +30,8 @@ namespace KinectButton
         private int _ColorImageStride;
         private Skeleton[] FrameSkeletons;
 
+        private String workspace = Directory.GetCurrentDirectory();
+            
         List<Button> buttons;
         static Button selected;
 
@@ -296,11 +299,29 @@ namespace KinectButton
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             message.Content = "Abriendo Presentación 1...";
+            Microsoft.Office.Interop.PowerPoint.Application pptApp = new Microsoft.Office.Interop.PowerPoint.Application();
+            Microsoft.Office.Core.MsoTriState ofalse = Microsoft.Office.Core.MsoTriState.msoFalse;
+            Microsoft.Office.Core.MsoTriState otrue = Microsoft.Office.Core.MsoTriState.msoTrue;
+            pptApp.Visible = otrue;
+            pptApp.Activate();
+            Presentations ps = pptApp.Presentations;
+            String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion1.pptx";
+            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
+            System.Diagnostics.Debug.Print(p.Windows.Count.ToString());
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
             message.Content = "Abriendo Presentación 2...";
+            Microsoft.Office.Interop.PowerPoint.Application pptApp = new Microsoft.Office.Interop.PowerPoint.Application();
+            Microsoft.Office.Core.MsoTriState ofalse = Microsoft.Office.Core.MsoTriState.msoFalse;
+            Microsoft.Office.Core.MsoTriState otrue = Microsoft.Office.Core.MsoTriState.msoTrue;
+            pptApp.Visible = otrue;
+            pptApp.Activate();
+            Presentations ps = pptApp.Presentations;
+            String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion2.pptx";
+            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
+            System.Diagnostics.Debug.Print(p.Windows.Count.ToString());
         }
 
         private void quitButton_Click(object sender, RoutedEventArgs e)
