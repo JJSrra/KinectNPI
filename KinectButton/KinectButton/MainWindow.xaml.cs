@@ -38,6 +38,16 @@ namespace KinectButton
         float handX;
         float handY;
 
+        bool isForwardGestureActive = false;
+        bool isBackGestureActive = false;
+        bool isCloseGestureActive = false;
+        bool isPPTOpen = false;
+
+        Microsoft.Office.Core.MsoTriState ofalse = Microsoft.Office.Core.MsoTriState.msoFalse;
+        Microsoft.Office.Core.MsoTriState otrue = Microsoft.Office.Core.MsoTriState.msoTrue;
+        private Microsoft.Office.Interop.PowerPoint.Application pptApp;
+        private Presentation p;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -178,6 +188,66 @@ namespace KinectButton
                         TrackHand(primaryHand);
 
                     }
+
+                    var head = skeleton.Joints[JointType.Head];
+                    var rightHand = skeleton.Joints[JointType.HandRight];
+                    var leftHand = skeleton.Joints[JointType.HandLeft];
+
+                    if (head.TrackingState == JointTrackingState.NotTracked ||
+                        rightHand.TrackingState == JointTrackingState.NotTracked ||
+                        leftHand.TrackingState == JointTrackingState.NotTracked)
+                    {
+                        //Don't have a good read on the joints so we cannot process gestures
+                        return;
+                    }
+
+                    ProcessForwardBackGesture(head, rightHand, leftHand);
+                }
+            }
+        }
+
+        private void ProcessForwardBackGesture(Joint head, Joint rightHand, Joint leftHand)
+        {
+            if (isPPTOpen)
+            {
+                if (rightHand.Position.X < head.Position.X - 0.1)
+                {
+                    if (!isForwardGestureActive)
+                    {
+                        isForwardGestureActive = true;
+                        System.Windows.Forms.SendKeys.SendWait("{Right}");
+                    }
+                }
+                else
+                {
+                    isForwardGestureActive = false;
+                }
+
+                if (leftHand.Position.X > head.Position.X + 0.1)
+                {
+                    if (!isBackGestureActive)
+                    {
+                        isBackGestureActive = true;
+                        System.Windows.Forms.SendKeys.SendWait("{Left}");
+                    }
+                }
+                else
+                {
+                    isBackGestureActive = false;
+                }
+
+                if ((rightHand.Position.X < head.Position.X + 0.05) && (leftHand.Position.X < head.Position.X - 0.05))
+                {
+                    if (!isCloseGestureActive)
+                    {
+                        isCloseGestureActive = true;
+                        pptApp.Quit();
+                        isPPTOpen = false;
+                    }
+                }
+                else
+                {
+                    isCloseGestureActive = false;
                 }
             }
         }
@@ -299,29 +369,27 @@ namespace KinectButton
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             message.Content = "Abriendo Presentación 1...";
-            Microsoft.Office.Interop.PowerPoint.Application pptApp = new Microsoft.Office.Interop.PowerPoint.Application();
-            Microsoft.Office.Core.MsoTriState ofalse = Microsoft.Office.Core.MsoTriState.msoFalse;
-            Microsoft.Office.Core.MsoTriState otrue = Microsoft.Office.Core.MsoTriState.msoTrue;
+            pptApp = new Microsoft.Office.Interop.PowerPoint.Application();
             pptApp.Visible = otrue;
             pptApp.Activate();
             Presentations ps = pptApp.Presentations;
             String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion1.pptx";
-            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
+            p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
             System.Diagnostics.Debug.Print(p.Windows.Count.ToString());
+            isPPTOpen = true;
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
             message.Content = "Abriendo Presentación 2...";
-            Microsoft.Office.Interop.PowerPoint.Application pptApp = new Microsoft.Office.Interop.PowerPoint.Application();
-            Microsoft.Office.Core.MsoTriState ofalse = Microsoft.Office.Core.MsoTriState.msoFalse;
-            Microsoft.Office.Core.MsoTriState otrue = Microsoft.Office.Core.MsoTriState.msoTrue;
+            pptApp = new Microsoft.Office.Interop.PowerPoint.Application();
             pptApp.Visible = otrue;
             pptApp.Activate();
             Presentations ps = pptApp.Presentations;
             String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion2.pptx";
-            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
+            p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
             System.Diagnostics.Debug.Print(p.Windows.Count.ToString());
+            isPPTOpen = true;
         }
 
         private void quitButton_Click(object sender, RoutedEventArgs e)
