@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Office.Interop.PowerPoint;
 
 using Microsoft.Kinect;
 using Coding4Fun.Kinect.Wpf;
@@ -215,13 +216,13 @@ namespace KinectButton
         //detect if hand is overlapping over any button
         private bool isHandOver(FrameworkElement hand, List<Button> buttonslist)
         {
-            var handTopLeft = new Point(Canvas.GetLeft(hand), Canvas.GetTop(hand));
+            var handTopLeft = new System.Windows.Point(Canvas.GetLeft(hand), Canvas.GetTop(hand));
             var handX = handTopLeft.X + hand.ActualWidth / 2;
             var handY = handTopLeft.Y + hand.ActualHeight / 2;
 
             foreach (Button target in buttonslist)
             {
-                Point targetTopLeft = new Point(Canvas.GetLeft(target), Canvas.GetTop(target));
+                System.Windows.Point targetTopLeft = new System.Windows.Point(Canvas.GetLeft(target), Canvas.GetTop(target));
                 if (handX > targetTopLeft.X &&
                     handX < targetTopLeft.X + target.Width &&
                     handY > targetTopLeft.Y &&
@@ -294,17 +295,17 @@ namespace KinectButton
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            message.Content = "Button 1 clicked!";
+            message.Content = "Abriendo Presentación 1...";
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-            message.Content = "Button 2 clicked!";
+            message.Content = "Abriendo Presentación 2...";
         }
 
         private void quitButton_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }
