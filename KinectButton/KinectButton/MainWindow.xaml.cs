@@ -183,7 +183,7 @@ namespace KinectButton
                     }
                     else
                     {
-                        if (isPPTOpen)
+                        if (!isPPTOpen)
                         {
                             Joint primaryHand = GetPrimaryHand(skeleton);
                             TrackHand(primaryHand);
