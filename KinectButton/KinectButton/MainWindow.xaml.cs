@@ -46,7 +46,6 @@ namespace KinectButton
         Microsoft.Office.Core.MsoTriState ofalse = Microsoft.Office.Core.MsoTriState.msoFalse;
         Microsoft.Office.Core.MsoTriState otrue = Microsoft.Office.Core.MsoTriState.msoTrue;
         private Microsoft.Office.Interop.PowerPoint.Application pptApp;
-        private Presentation p;
 
         public MainWindow()
         {
@@ -187,21 +186,21 @@ namespace KinectButton
                         Joint primaryHand = GetPrimaryHand(skeleton);
                         TrackHand(primaryHand);
 
+                        var head = skeleton.Joints[JointType.Head];
+                        var rightHand = skeleton.Joints[JointType.HandRight];
+                        var leftHand = skeleton.Joints[JointType.HandLeft];
+
+                        if (head.TrackingState == JointTrackingState.NotTracked ||
+                            rightHand.TrackingState == JointTrackingState.NotTracked ||
+                            leftHand.TrackingState == JointTrackingState.NotTracked)
+                        {
+                            //Don't have a good read on the joints so we cannot process gestures
+                            return;
+                        }
+
+                        ProcessForwardBackGesture(head, rightHand, leftHand);
+
                     }
-
-                    var head = skeleton.Joints[JointType.Head];
-                    var rightHand = skeleton.Joints[JointType.HandRight];
-                    var leftHand = skeleton.Joints[JointType.HandLeft];
-
-                    if (head.TrackingState == JointTrackingState.NotTracked ||
-                        rightHand.TrackingState == JointTrackingState.NotTracked ||
-                        leftHand.TrackingState == JointTrackingState.NotTracked)
-                    {
-                        //Don't have a good read on the joints so we cannot process gestures
-                        return;
-                    }
-
-                    ProcessForwardBackGesture(head, rightHand, leftHand);
                 }
             }
         }
@@ -374,7 +373,7 @@ namespace KinectButton
             pptApp.Activate();
             Presentations ps = pptApp.Presentations;
             String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion1.pptx";
-            p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
+            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
             System.Diagnostics.Debug.Print(p.Windows.Count.ToString());
             isPPTOpen = true;
         }
@@ -387,7 +386,7 @@ namespace KinectButton
             pptApp.Activate();
             Presentations ps = pptApp.Presentations;
             String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion2.pptx";
-            p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
+            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
             System.Diagnostics.Debug.Print(p.Windows.Count.ToString());
             isPPTOpen = true;
         }
