@@ -9,7 +9,7 @@
             <Button x:Name="button2" Content="Presentación 2" Height="152" Canvas.Left="525" Canvas.Top="162" Width="370" Background="#3b5998" FontSize="53.333" Click="button2_Click" BorderThickness="4" Foreground="White" />
             <Label Canvas.Left="349" Canvas.Top="56" Content="Kinect NPI App" Height="68" Name="label1" FontSize="40" Width="302" Foreground="#3b5998" />
             <Label Canvas.Left="239" Canvas.Top="380" Content="" Height="66" Name="message" Width="530" Foreground="#3b5998" FontSize="40" RenderTransformOrigin="0.957,-1.894" />
-            <Button Canvas.Left="779" Canvas.Top="484" Content="Quit" Height="91" Name="quitButton" Width="137" FontSize="28" Background="#d62d20" Foreground="White" Click="quitButton_Click" RenderTransformOrigin="0.547,-0.582" />
+            <Button Canvas.Left="758" Canvas.Top="499" Content="Quit" Height="91" Name="quitButton" Width="137" FontSize="28" Background="#d62d20" Foreground="White" Click="quitButton_Click" RenderTransformOrigin="0.547,-0.582" />
             <Controls:HoverButton Margin="0" Padding="0" x:Name="kinectButton" ImageSize="50"
                                   ImageSource="/Images/RightHand.png"
                                   ActiveImageSource="/Images/RightHand.png"
