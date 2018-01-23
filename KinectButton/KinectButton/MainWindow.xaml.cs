@@ -235,7 +235,9 @@ namespace KinectButton
                     isBackGestureActive = false;
                 }
 
-                if ((rightHand.Position.X < head.Position.X + 0.05) && (leftHand.Position.X < head.Position.X - 0.05))
+                
+                if ((rightHand.Position.X < head.Position.X + 0.001) && (leftHand.Position.X < head.Position.X - 0.001) &&
+                    ( Math.Abs(rightHand.Position.X-leftHand.Position.X)  < 0.005 ) )
                 {
                     if (!isCloseGestureActive)
                     {
@@ -248,6 +250,7 @@ namespace KinectButton
                 {
                     isCloseGestureActive = false;
                 }
+                
             }
         }
 
@@ -374,7 +377,13 @@ namespace KinectButton
             Presentations ps = pptApp.Presentations;
             String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion1.pptx";
             Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
-            System.Diagnostics.Debug.Print(p.Windows.Count.ToString());
+            Slides objSlides = p.Slides;
+            Microsoft.Office.Interop.PowerPoint.SlideShowWindows objSSWs; Microsoft.Office.Interop.PowerPoint.SlideShowSettings objSSS;
+            //Run the Slide show
+            objSSS = p.SlideShowSettings;
+            objSSS.Run();
+            objSSWs = pptApp.SlideShowWindows;
+            
             isPPTOpen = true;
         }
 
@@ -387,7 +396,13 @@ namespace KinectButton
             Presentations ps = pptApp.Presentations;
             String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion2.pptx";
             Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
-            System.Diagnostics.Debug.Print(p.Windows.Count.ToString());
+            Slides objSlides = p.Slides;
+            Microsoft.Office.Interop.PowerPoint.SlideShowWindows objSSWs; Microsoft.Office.Interop.PowerPoint.SlideShowSettings objSSS;
+            //Run the Slide show
+            objSSS = p.SlideShowSettings;
+            objSSS.Run();
+            objSSWs = pptApp.SlideShowWindows;
+           
             isPPTOpen = true;
         }
 
