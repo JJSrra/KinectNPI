@@ -2,19 +2,18 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:Coding4Fun.Kinect.Wpf.Controls;assembly=Coding4Fun.Kinect.Wpf"
-        Title="Kinect NPI App" Height="811" Width="1028">
+        Title="Kinect NPI App" Height="950" Width="1250">
     <Grid x:Name="LayoutRoot">
         <Canvas Background="#dfe3ee">
-            <Button x:Name="button1" Content="Presentación 1" Height="152" Canvas.Left="110" Canvas.Top="162" Width="370" Background="#3b5998" FontSize="53.333" Click="button1_Click" BorderThickness="4" Foreground="White" />
-            <Button x:Name="button2" Content="Presentación 2" Height="152" Canvas.Left="525" Canvas.Top="162" Width="370" Background="#3b5998" FontSize="53.333" Click="button2_Click" BorderThickness="4" Foreground="White" />
-            <Label Canvas.Left="349" Canvas.Top="56" Content="Kinect NPI App" Height="68" Name="label1" FontSize="40" Width="302" Foreground="#3b5998" />
-            <Label Canvas.Left="139" Canvas.Top="380" Content="" Height="66" Name="message" Width="730" Foreground="#3b5998" FontSize="40" RenderTransformOrigin="0.957,-1.894" />
-            <Button Canvas.Left="758" Canvas.Top="499" Content="Cerrar" Height="91" Name="quitButton" Width="137" FontSize="28" Background="#d62d20" Foreground="White" Click="quitButton_Click" RenderTransformOrigin="0.547,-0.582" />
+            <Button x:Name="button1" Content="Presentación 1" Height="152" Canvas.Left="172" Canvas.Top="162" Width="370" Background="#3b5998" FontSize="53.333" Click="button1_Click" BorderThickness="4" Foreground="White" />
+            <Button x:Name="button2" Content="Presentación 2" Height="152" Canvas.Left="721" Canvas.Top="162" Width="370" Background="#3b5998" FontSize="53.333" Click="button2_Click" BorderThickness="4" Foreground="White" />
+            <Label Canvas.Left="475" Canvas.Top="53" Content="Kinect NPI App" Height="68" Name="label1" FontSize="40" Width="302" Foreground="#3b5998" />
+            <Button Canvas.Left="924" Canvas.Top="423" Content="Cerrar" Height="137" Name="quitButton" Width="167" FontSize="28" Background="#d62d20" Foreground="White" Click="quitButton_Click" RenderTransformOrigin="0.547,-0.582" />
             <Controls:HoverButton Margin="0" Padding="0" x:Name="kinectButton" ImageSize="50"
                                   ImageSource="/Images/RightHand.png"
                                   ActiveImageSource="/Images/RightHand.png"
                                   TimeInterval="2000"  Panel.ZIndex="1000" Canvas.Left="0" Canvas.Top="0" />
         </Canvas>
-        <Image Height="239" HorizontalAlignment="Left" Margin="325,500,0,0" Name="videoStream" Stretch="Fill" VerticalAlignment="Top" Width="356" RenderTransformOrigin="-0.242,0.481" />
+        <Image Height="468" HorizontalAlignment="Left" Margin="197,380,0,0" Name="videoStream" Stretch="Fill" VerticalAlignment="Top" Width="664" RenderTransformOrigin="-0.242,0.481" />
     </Grid>
 </Window>

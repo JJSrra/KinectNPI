@@ -370,13 +370,13 @@ namespace KinectButton
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            message.Content = "Abriendo Presentación 1...";
+            
             pptApp = new Microsoft.Office.Interop.PowerPoint.Application();
             pptApp.Visible = otrue;
             pptApp.Activate();
             Presentations ps = pptApp.Presentations;
             String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion1.pptx";
-            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
+            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, ofalse);
             Slides objSlides = p.Slides;
             Microsoft.Office.Interop.PowerPoint.SlideShowWindows objSSWs; Microsoft.Office.Interop.PowerPoint.SlideShowSettings objSSS;
             //Run the Slide show
@@ -389,13 +389,13 @@ namespace KinectButton
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-            message.Content = "Abriendo Presentación 2...";
+           
             pptApp = new Microsoft.Office.Interop.PowerPoint.Application();
             pptApp.Visible = otrue;
             pptApp.Activate();
             Presentations ps = pptApp.Presentations;
             String ppt_workspace = workspace + @"\..\..\Presentaciones\Presentacion2.pptx";
-            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, otrue);
+            Presentation p = ps.Open(ppt_workspace, ofalse, ofalse, ofalse);
             Slides objSlides = p.Slides;
             Microsoft.Office.Interop.PowerPoint.SlideShowWindows objSSWs; Microsoft.Office.Interop.PowerPoint.SlideShowSettings objSSS;
             //Run the Slide show
