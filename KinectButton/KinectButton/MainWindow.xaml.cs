@@ -183,23 +183,27 @@ namespace KinectButton
                     }
                     else
                     {
-                        Joint primaryHand = GetPrimaryHand(skeleton);
-                        TrackHand(primaryHand);
-
-                        var head = skeleton.Joints[JointType.Head];
-                        var rightHand = skeleton.Joints[JointType.HandRight];
-                        var leftHand = skeleton.Joints[JointType.HandLeft];
-
-                        if (head.TrackingState == JointTrackingState.NotTracked ||
-                            rightHand.TrackingState == JointTrackingState.NotTracked ||
-                            leftHand.TrackingState == JointTrackingState.NotTracked)
+                        if (isPPTOpen)
                         {
-                            //Don't have a good read on the joints so we cannot process gestures
-                            return;
+                            Joint primaryHand = GetPrimaryHand(skeleton);
+                            TrackHand(primaryHand);
                         }
+                        else
+                        {
+                            var head = skeleton.Joints[JointType.Head];
+                            var rightHand = skeleton.Joints[JointType.HandRight];
+                            var leftHand = skeleton.Joints[JointType.HandLeft];
 
-                        ProcessForwardBackGesture(head, rightHand, leftHand);
+                            if (head.TrackingState == JointTrackingState.NotTracked ||
+                                rightHand.TrackingState == JointTrackingState.NotTracked ||
+                                leftHand.TrackingState == JointTrackingState.NotTracked)
+                            {
+                                //Don't have a good read on the joints so we cannot process gestures
+                                return;
+                            }
 
+                            ProcessForwardBackGesture(head, rightHand, leftHand);
+                        }
                     }
                 }
             }
@@ -207,50 +211,46 @@ namespace KinectButton
 
         private void ProcessForwardBackGesture(Joint head, Joint rightHand, Joint leftHand)
         {
-            if (isPPTOpen)
+            if (rightHand.Position.X < head.Position.X - 0.1)
             {
-                if (rightHand.Position.X < head.Position.X - 0.1)
+                if (!isForwardGestureActive)
                 {
-                    if (!isForwardGestureActive)
-                    {
-                        isForwardGestureActive = true;
-                        System.Windows.Forms.SendKeys.SendWait("{Right}");
-                    }
+                    isForwardGestureActive = true;
+                    System.Windows.Forms.SendKeys.SendWait("{Right}");
                 }
-                else
-                {
-                    isForwardGestureActive = false;
-                }
+            }
+            else
+            {
+                isForwardGestureActive = false;
+            }
 
-                if (leftHand.Position.X > head.Position.X + 0.1)
+            if (leftHand.Position.X > head.Position.X + 0.1)
+            {
+                if (!isBackGestureActive)
                 {
-                    if (!isBackGestureActive)
-                    {
-                        isBackGestureActive = true;
-                        System.Windows.Forms.SendKeys.SendWait("{Left}");
-                    }
+                    isBackGestureActive = true;
+                    System.Windows.Forms.SendKeys.SendWait("{Left}");
                 }
-                else
-                {
-                    isBackGestureActive = false;
-                }
+            }
+            else
+            {
+                isBackGestureActive = false;
+            }
 
                 
-                if ((rightHand.Position.X < head.Position.X + 0.001) && (leftHand.Position.X < head.Position.X - 0.001) &&
-                    ( Math.Abs(rightHand.Position.X-leftHand.Position.X)  < 0.005 ) )
+            if ((rightHand.Position.X < head.Position.X + 0.001) && (leftHand.Position.X < head.Position.X - 0.001) &&
+                ( Math.Abs(rightHand.Position.X-leftHand.Position.X)  < 0.005 ) )
+            {
+                if (!isCloseGestureActive)
                 {
-                    if (!isCloseGestureActive)
-                    {
-                        isCloseGestureActive = true;
-                        pptApp.Quit();
-                        isPPTOpen = false;
-                    }
+                    isCloseGestureActive = true;
+                    pptApp.Quit();
+                    isPPTOpen = false;
                 }
-                else
-                {
-                    isCloseGestureActive = false;
-                }
-                
+            }
+            else
+            {
+                isCloseGestureActive = false;
             }
         }
 
